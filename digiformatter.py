@@ -11,7 +11,7 @@ os.system("")
 FORE = 0
 BACK = 1
 ATTR = 2
-version = "0.3.1"
+version = "0.3.2"
 
 #Customizables.
 timecolor = 5
@@ -95,19 +95,19 @@ def overwriteLines(lines):
     return BeginOfLine + ((CursorUp + DeleteLine) * lines)
 
 #Set methods for customizables.
-def timecolor(new):
+def settimecolor(new):
     global timecolor
     timecolor = new
-def msgcolor(new):
+def setmsgcolor(new):
     global msgcolor
     msgcolor = new
-def testcolor(new):
+def settestcolor(new):
     global testcolor
     testcolor = new
-def linelength(new):
+def setlinelength(new):
     global linelength
     linelength = new
-def timestring(new):
+def settimestring(new):
     global timestring
     timestring = new
 
