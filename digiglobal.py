@@ -15,6 +15,8 @@ from colored import fore, back, style, fg, bg, attr
 from pathlib import Path
 from math import *
 
+import digiformatter as df
+
 #Version.
 version = "0.1.0a"
 
@@ -147,7 +149,7 @@ emojidict ={'a': ':regional_indicator_a:',
             '７': ':seven:',
             '８': ':eight:',
             '９': ':nine:',
-            ' ': ':black_large_square:',
+            ' ': ' ',
             '!': ':exclamation:',
             '?': ':question:',
             '#': ':hash:',
@@ -167,7 +169,7 @@ emojidict ={'a': ':regional_indicator_a:',
             '£': ':pound:',
             '_': ':heavy_minus_sign:',
             '‽': ':interrobang:',
-            ' ': emojiBlank,
+            ' ': ' ',
             '！': ':exclamation:',
             '？': ':question:',
             '＃': ':hash:',

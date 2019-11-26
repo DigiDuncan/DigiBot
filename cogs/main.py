@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import digiformatter as df
+from digiglobal import *
 
 class MainCog(commands.Cog):
     def __init__(self, bot):

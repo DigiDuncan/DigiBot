@@ -1,7 +1,6 @@
-import digiformatter as df
-import datetime
+from digiglobal import *
 
-launch = datetime.now()
+launch = datetime.datetime.now()
 
 # Get authtoken from file.
 with open("_authtoken.txt") as f:
@@ -12,26 +11,23 @@ authtoken = authtoken[0]
 # Predefined variables.
 prefix = '$'
 description = '''A Discord bot with many unrelated functions. A personal coding project.'''
-initial_extensions = [
-    'cogs.main'
-]
+initial_extensions = ['cogs.main']
 
 bot = commands.Bot(command_prefix=prefix, description=description)
 bot.remove_command("help")
-bot.add_check(check)
 
 @bot.event
 # Output header.
 async def on_ready():
-    print(fore.CYAN + 'Logged in as')
+    print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
-    print('------' + style.RESET)
+    print('------')
     await bot.change_presence(activity=discord.Game(name="Just Monika."))
     df.warn("Warn test.")
     df.crit("Crit test.")
     df.test("Test test.")
-    finishlaunch = datetime.now()
+    finishlaunch = datetime.datetime.now()
     elapsed = finishlaunch - launch
     df.test(f"DigiBot launched in {round((elapsed.total_seconds() * 1000), 3)} milliseconds.")
     print()
