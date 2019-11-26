@@ -1,6 +1,0 @@
-@echo off
-echo Booting WIPBot...
-echo Running Python script...
-
-python main.py
-pause
