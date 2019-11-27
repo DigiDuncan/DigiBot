@@ -11,10 +11,12 @@ authtoken = authtoken[0]
 # Predefined variables.
 prefix = '$'
 description = '''A Discord bot with many unrelated functions. A personal coding project.'''
-initial_extensions = ['cogs.main']
+initial_extensions = ['cogs.main',
+                    'cogs.quote',
+                    'cogs.eastereggs']
 
 bot = commands.Bot(command_prefix=prefix, description=description)
-bot.remove_command("help")
+#bot.remove_command("help")
 
 @bot.event
 # Output header.

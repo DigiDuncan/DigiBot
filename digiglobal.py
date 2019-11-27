@@ -9,6 +9,7 @@ import time
 import random
 import asyncio
 import codecs
+import io
 
 from decimal import *
 from colored import fore, back, style, fg, bg, attr
@@ -23,7 +24,26 @@ version = "0.1.0a"
 #Constants
 newline = "\n"
 folder = ".."
-digiid = 271803699095928832
+
+def getID(*names):
+    iddict = {}
+    with io.open("ids.txt", "r", encoding="utf-8") as idfile:
+        ids = idfile.readlines()
+    ids = [x.strip() for x in ids]
+    for line in ids:
+        iddict[line[19:]] = line[:18]
+    if len(names) == 0:
+        return iddict
+    if len(names) == 1:
+        if names in iddict.keys(): return int(iddict[names])
+        else: return 000000000000000000
+    else:
+        for name in names:
+            idlist = []
+            for name in names:
+                if name in iddict.keys(): idlist.append(int(iddict[name]))
+                else: idlist.append(000000000000000000)
+            return tuple(idlist)
 
 emojidict ={'a': ':regional_indicator_a:',
             'b': ':regional_indicator_b:',

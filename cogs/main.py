@@ -1,6 +1,3 @@
-import discord
-from discord.ext import commands
-import digiformatter as df
 from digiglobal import *
 
 class MainCog(commands.Cog):
@@ -10,8 +7,7 @@ class MainCog(commands.Cog):
     @commands.command()
     async def say(self, ctx, *, message: str):
         await ctx.message.delete()
-        if ctx.message.author.id == digiid:
-            await ctx.send(message)
+        await ctx.send(message)
 
     @commands.command()
     async def sing(self, ctx, *, string: str):
@@ -20,15 +16,14 @@ class MainCog(commands.Cog):
         await ctx.send(newstring)
 
     @commands.command()
-    async def roll(self, ctx, dString, modType : str = None, mod : int = None):
+    async def roll(self, ctx, dString):
         rolls = []
         usedrolls = []
         dSides = 0
         dNum = 0
         dDrops = 0
         dTotal = 0
-        printModType = ""
-        printMod = ""
+        stop = False
         dArray = dString.split("d")
         if len(dArray) == 2:
             dNum = int(dArray[0])
@@ -40,22 +35,28 @@ class MainCog(commands.Cog):
         else:
             await ctx.send('Format has to be in XdY or XdYdZ.')
             return
-        df.msg("User {0} rolled {1} {2}-sided dice and dropped {3}.".format(ctx.message.author.name, dNum, dSides, dDrops))
+        if dSides > 1000000:
+            await ctx.send('Too many sides!')
+            df.warn(f"{ctx.message.author.id} ({ctx.message.author.nick}) tried to roll a {dSides}-sided die!")
+            stop = True
+        if dNum > 250:
+            await ctx.send('Too many dice!')
+            df.warn(f"{ctx.message.author.id} ({ctx.message.author.nick}) tried to roll {dNum} dice!")
+            stop = True
+        if stop: return
         for x in range(dNum):
-            currentRoll = (random.randrange(1, dSides))
+            currentRoll = (random.randrange(1, dSides + 1))
             rolls.append(currentRoll)
         rolls.sort(key=int)
         for x in range(dDrops, len(rolls)):
             dTotal = dTotal + rolls[x]
             usedrolls.append(rolls[x])
-        #diffs = set(rolls).symmetric_difference(set(usedrolls))
-        if modType != None and mod != None:
-            printMod = mod
-            printModType = modType
-            if modType == "+": dTotal += mod
-            if modType == "-": dTotal -+ mod
-        df.msg("User {0} rolled {1} {3}{4} for a total of {2}".format(ctx.message.author.name, str(usedrolls), str(dTotal), printModType, printMod))
-        await ctx.send("{0} rolled {1} {4}{5} and got {2}!\nDice: {3} {4}{5}".format(ctx.message.author.name, dString, str(dTotal), str(usedrolls), printModType, printMod))
+        dropped = rolls
+        for item in usedrolls: dropped.remove(item)
+        sendstring = "{0} rolled {1} and got {2}!\nDice: {3}".format(ctx.message.author.nick, dString, str(dTotal), str(usedrolls))
+        if dropped != []: sendstring = sendstring + "\n~~Dropped: {0}~~".format(str(dropped))
+        df.msg(f"{ctx.message.author.id} ({ctx.message.author.nick}) rolled {dString}.")
+        await ctx.send(sendstring)
 
     @commands.command()
     async def emojify(self, ctx, *, string):
