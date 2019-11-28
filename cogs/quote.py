@@ -16,7 +16,18 @@ class QuoteCog(commands.Cog):
             quoteslist = [x.strip() for x in quoteslist]
             await ctx.send(f"""***Quote added***:
 {quotetoadd}""")
+            await bot.get_channel('560143208311422976').send(f"***Quote {len(quoteslist)}:*** {quotetoadd}".replace(";", "\n"))
             df.msg(f"{ctx.message.author.name} added quote {len(quoteslist)}:\n{quotetoadd}")
+        if commandstring.startswith("random") or commandstring == "":
+            with io.open("quotes.txt", encoding="utf-8") as quotefile:
+                quoteslist = quotefile.readlines()
+            quoteslist = [x.strip() for x in quoteslist]
+            quoteid = random.randrange(len(quoteslist))
+            printquote = quoteslist[quoteid]
+            printquote = printquote.replace(";", "\n")
+            await ctx.send(f"""***Random Quote {quoteid}:***
+{printquote}""")
+            df.msg(f"{ctx.message.author.name} printed a random quote {quoteid}.")
         #Print a quote.
         else:
             with io.open("quotes.txt", encoding="utf-8") as quotefile:

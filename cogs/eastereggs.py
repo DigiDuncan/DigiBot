@@ -33,7 +33,8 @@ class EggCog(commands.Cog):
 Read more here: https://en.wikipedia.org/wiki/Up_(2009_film)""")
         if "give me an a" in message.content.lower():
             df.warn("{0} wants an A!".format(message.author.name))
-            await message.channel.send("", file=discord.File("images/clarinet.png", 'A.jpg'))
+            files = [discord.File("audio/a.wav"), discord.File("images/clarinet.png", 'A.jpg')]
+            await message.channel.send("", files=files)
 
 # Necessary.
 def setup(bot):

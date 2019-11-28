@@ -13,6 +13,7 @@ prefix = '$'
 description = '''A Discord bot with many unrelated functions. A personal coding project.'''
 initial_extensions = ['cogs.main',
                     'cogs.quote',
+#                    'cogs.ai',
                     'cogs.eastereggs']
 
 bot = commands.Bot(command_prefix=prefix, description=description)

@@ -19,7 +19,7 @@ from math import *
 import digiformatter as df
 
 #Version.
-version = "0.1.0a"
+version = "0.2.0a"
 
 #Constants
 newline = "\n"
@@ -189,6 +189,7 @@ emojidict ={'a': ':regional_indicator_a:',
             '£': ':pound:',
             '_': ':heavy_minus_sign:',
             '‽': ':interrobang:',
+            ',': ':arrow_up_small:',
             ' ': ' ',
             '！': ':exclamation:',
             '？': ':question:',

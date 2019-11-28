@@ -64,7 +64,7 @@ class MainCog(commands.Cog):
         emojistring = ""
         if string == "$test":
             df.msg("Sending test message.")
-            string = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 .!?,*#*'‽+-=<>^¥€£"
+            string = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 .,!?,*#*'‽+-=<>^¥€£"
         if string.lower() == "b":
             emojistring = ":b:"
         else:
@@ -75,10 +75,33 @@ class MainCog(commands.Cog):
                 if c not in emojidict:
                     emojistring = emojistring + ":stop_sign:"
         if len(emojistring) >= 2000:
-            df.msg("User {0} requested an emojified string too long for Discord.".format(ctx.message.author.id))
-            await ctx.send("<@{0}>, Emojified string too long for Discord.".format(ctx.message.author.id), delete_after=5)
+            messagelist = []
+            emojilist = []
+            currentmessage = ""
+            currentemoji = ""
+            currentcolon = 0
+            for char in emojistring:
+                currentemoji += char
+                if char == ":": currentcolon += 1
+                if currentcolon % 2 == 0 and currentcolon != 0:
+                    emojilist.append(currentemoji)
+                    currentemoji = ""
+            for emoji in emojilist:
+                if len(currentmessage + emoji) > 2000:
+                    messagelist.append(currentmessage)
+                    currentmessage = ""
+                currentmessage += emoji
+            for message in messagelist:
+                await ctx.send(message)
+            #df.msg("User {0} requested an emojified string too long for Discord.".format(ctx.message.author.id))
+            #await ctx.send("<@{0}>, Emojified string too long for Discord.".format(ctx.message.author.id), delete_after=5)
         else:
             await ctx.send(emojistring)
+
+    @commands.command()
+    async def digipee(self, ctx):
+        await ctx.send(f"<@{getID("DigiDuncan")}> also has to pee.")
+        df.msg("DigiDuncan also has to pee.")
 
 # Necessary.
 def setup(bot):
