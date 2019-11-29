@@ -100,9 +100,14 @@ class MainCog(commands.Cog):
 
     @commands.command()
     async def digipee(self, ctx):
-        await ctx.send(f"<@{getID("DigiDuncan")}> also has to pee.")
+        await ctx.send(f"DigiDuncan also has to pee.")
         df.msg("DigiDuncan also has to pee.")
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.content.startswith("!digipee"):
+            cont = await self.bot.get_context(message)
+            await cont.invoke(self.bot.get_command("digipee"))
 # Necessary.
 def setup(bot):
     bot.add_cog(MainCog(bot))
