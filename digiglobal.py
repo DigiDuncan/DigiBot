@@ -31,7 +31,7 @@ folder = ".."
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
 #Emojis.
-loadingemoji = "<:loading:650450030519386143>"
+loadingemoji = "<a:loading:650449888684933166>"
 
 #General commands.
 def getID(*names):
@@ -221,32 +221,49 @@ emojidict ={'a': ':regional_indicator_a:',
             newline: newline}
 
 #Wii command.
+
+gamecubelogo = "https://media.discordapp.net/attachments/650460192009617433/650460502933241876/gamecubeicon.png"
+wiilogo = "https://media.discordapp.net/attachments/650460192009617433/650460511070060574/wiiicon.png"
+homebrewlogo = "https://media.discordapp.net/attachments/650460192009617433/650475421439229953/homebrewicon.jpg"
+gametdblogo = "https://media.discordapp.net/attachments/650460192009617433/650460504644517926/gametdb.png"
+vclogo = "https://media.discordapp.net/attachments/650460192009617433/650475423343575080/vcicon.png"
+qmark = "https://media.discordapp.net/attachments/650460192009617433/650476654669594635/questionmark.png"
+
 def getWiiAttribute(soup, attr):
+    #Find the GameData table, then it's first table data to match the attribute.
     lookup = soup.find("table", class_="GameData").find("td", string=attr)
+    #Attributes sometimes have newlines because this HTML is dumb.
     if lookup == None: lookup = soup.find("table", class_="GameData").find("td", string=attr + newline)
+    #If we still can't find it, the attribute doesn't exist. Return a blank.
     if lookup == None:
         return ""
+    #The attributes value is in the next sibling,
     returnattr = lookup.next_sibling
+    #If the the value doesn't exist, return a blank.
     if returnattr == None: return ""
 
+    #Get rid of newlines in the raw HTML for this chunk (which should include the value we want.)
     attrstring = str(returnattr).replace(newline, "")
+    #Parse HTML with regex ;)
     if re.search(">(.*?)<", attrstring) != None: return re.search(">(.*?)<", attrstring).group(1)
+    #If we STILL can't find it, return a blank.
     return ""
 
 def getWiiAttributes(GAMEID):
+    #Get the soup for the page of the game we want.
     response = requests.get(f"https://www.gametdb.com/Wii/{GAMEID}", headers=hdr)
     soup = BeautifulSoup(response.content, "html.parser")
 
+    #Build a dictionary of arrtibutes.
     attrdict = {}
     attrdict['ID'] = GAMEID
     attrdict['name'] = getWiiAttribute(soup, "title (EN)")
-    if attrdict['name'] == "": attrdict['name'] = getWiiAttribute(soup, "title (JP)")
+    if attrdict['name'] == "": attrdict['name'] = getWiiAttribute(soup, "title (JP)") #Fallback to the JP title.
     attrdict['region'] = getWiiAttribute(soup, "region")
     attrdict['type'] = getWiiAttribute(soup, "type")
-    attrdict['region'] = getWiiAttribute(soup, "region")
     attrdict['languages'] = getWiiAttribute(soup, "languages")
     attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (EN)")
-    if attrdict['synopsis'] == "": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)")
+    if attrdict['synopsis'] == "": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)") #Fallback to the JP synposis.
     attrdict['developer'] = getWiiAttribute(soup, "developer")
     attrdict['publisher'] = getWiiAttribute(soup, "publisher")
     attrdict['date'] = getWiiAttribute(soup, "release date")
@@ -254,8 +271,27 @@ def getWiiAttributes(GAMEID):
     attrdict['rating'] = getWiiAttribute(soup, "rating")
     attrdict['cover'] = f"https://art.gametdb.com/wii/cover/US/{GAMEID}.png"
 
+    #Set the color and console icon of this game (purple for GameCube, "azurish white" for Wii,
+    #black for custom/homebrew, cyan for VC, red for other.)
+    if attrdict['type'].lower() == "gamecube":
+        attrdict['icon'] = gamecubelogo
+        attrdict['color'] = discord.Color.from_rgb(100, 80, 151)
+    elif attrdict['type'].lower() == "wii":
+        attrdict['icon'] = wiilogo
+        attrdict['color'] = discord.Color.from_rgb(219, 233, 244)
+    elif attrdict['type'].lower() == "homebrew" or attrdict['type'].lower() == "custom":
+        attrdict['icon'] = homebrewlogo
+        attrdict['color'] = discord.Color.from_rgb(0, 0, 0)
+    elif attrdict['type'].lower() == "virtual console" or attrdict['type'].lower().startswith("vc"):
+        attrdict['icon'] = vclogo
+        attrdict['color'] = discord.Color.from_rgb(27, 183, 235)
+    else:
+        attrdict['icon'] = qmark
+        atrrdict['color'] = discord.Color.from_rgb(200, 0, 0)
+
     return attrdict
 
+#Make a dictionary of all game IDs and their corrosponding titles.
 wiidictionary = {}
 with io.open("text/wiitdb.txt", encoding="utf-8") as wiidb:
     lines = wiidb.readlines()
