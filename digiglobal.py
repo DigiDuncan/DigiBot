@@ -12,6 +12,7 @@ import codecs
 import io
 import requests
 import html
+import shutil
 
 from decimal import *
 from colored import fore, back, style, fg, bg, attr
@@ -22,13 +23,14 @@ from bs4 import BeautifulSoup
 import digiformatter as df
 
 #Version.
-version = "0.2.1a"
+version = "0.3.1a"
 
-#Constants
+#Constants.
 newline = "\n"
 folder = ".."
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
+#General commands.
 def getID(*names):
     iddict = {}
     with io.open("text/ids.txt", "r", encoding="utf-8") as idfile:
@@ -49,6 +51,7 @@ def getID(*names):
                 else: idlist.append(000000000000000000)
             return tuple(idlist)
 
+#Emojify command.
 emojidict ={'a': ':regional_indicator_a:',
             'b': ':regional_indicator_b:',
             'c': ':regional_indicator_c:',
@@ -213,3 +216,46 @@ emojidict ={'a': ':regional_indicator_a:',
             '￥': ':yen:',
             '＿': ':heavy_minus_sign:',
             newline: newline}
+
+#Wii command.
+def getWiiAttribute(soup, attr):
+    lookup = soup.find("table", class_="GameData").find("td", string=attr)
+    if lookup == None: lookup = soup.find("table", class_="GameData").find("td", string=attr + newline)
+    if lookup == None:
+        return ""
+    returnattr = lookup.next_sibling
+    if returnattr == None: return ""
+
+    attrstring = str(returnattr).replace(newline, "")
+    if re.search(">(.*?)<", attrstring) != None: return re.search(">(.*?)<", attrstring).group(1)
+    return ""
+
+def getWiiAttributes(GAMEID):
+    response = requests.get(f"https://www.gametdb.com/Wii/{GAMEID}", headers=hdr)
+    soup = BeautifulSoup(response.content, "html.parser")
+
+    attrdict = {}
+    attrdict['ID'] = GAMEID
+    attrdict['name'] = getWiiAttribute(soup, "title (EN)")
+    if attrdict['name'] == "": attrdict['name'] = getWiiAttribute(soup, "title (JP)")
+    attrdict['region'] = getWiiAttribute(soup, "region")
+    attrdict['type'] = getWiiAttribute(soup, "type")
+    attrdict['region'] = getWiiAttribute(soup, "region")
+    attrdict['languages'] = getWiiAttribute(soup, "languages")
+    attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (EN)")
+    if attrdict['synopsis'] == "": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)")
+    attrdict['developer'] = getWiiAttribute(soup, "developer")
+    attrdict['publisher'] = getWiiAttribute(soup, "publisher")
+    attrdict['date'] = getWiiAttribute(soup, "release date")
+    attrdict['genre'] = getWiiAttribute(soup, "genre")
+    attrdict['rating'] = getWiiAttribute(soup, "rating")
+    attrdict['cover'] = f"https://art.gametdb.com/wii/cover/US/{GAMEID}.png"
+
+    return attrdict
+
+wiidictionary = {}
+with io.open("text/wiitdb.txt", encoding="utf-8") as wiidb:
+    lines = wiidb.readlines()
+    for line in lines:
+        splitline = line.split(" = ")
+        wiidictionary[splitline[0]] = splitline[1].strip()
