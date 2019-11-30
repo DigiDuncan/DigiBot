@@ -27,6 +27,7 @@ version = "0.2.1a"
 #Constants
 newline = "\n"
 folder = ".."
+hdr = {'User-Agent': 'Mozilla/5.0'}
 
 def getID(*names):
     iddict = {}

@@ -13,6 +13,7 @@ prefix = '$'
 description = '''A Discord bot with many unrelated functions. A personal coding project.'''
 initial_extensions = ['cogs.main',
                     'cogs.quote',
+                    'cogs.wii',
 #                    'cogs.ai',
                     'cogs.eastereggs']
 
