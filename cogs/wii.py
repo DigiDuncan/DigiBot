@@ -7,6 +7,7 @@ class WiiCog(commands.Cog):
     @commands.command()
     async def wiisearch(self, ctx, searchterm, flags = None):
         df.msg(f"{ctx.message.author.name} requested a WiiSearch on the term \"{searchterm}\".")
+        initialmessage = await ctx.send(f"{loadingemoji} Processing {ctx.message.author.name}'s Wii search...")
         if searchterm.upper() in wiidictionary.keys():
             #The searchterm is a Game ID.
             #TODO: Make into an embed.
@@ -18,6 +19,7 @@ class WiiCog(commands.Cog):
             imgresponse = requests.get(imgurl, stream=True)
             with open(f"temp/{searchterm}.png", "wb") as out_file:
                 shutil.copyfileobj(imgresponse.raw, out_file)
+            initialmessage.delete()
             await ctx.send(message, file=discord.File(f"temp/{searchterm}.png", "f{gameid}.png"))
         #else:
             #Use a searching tool to find relevant suggestions, then use the most revelant one,

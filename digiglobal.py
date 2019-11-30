@@ -30,6 +30,9 @@ newline = "\n"
 folder = ".."
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
+#Emojis.
+loadingemoji = "<:loading:650450030519386143>"
+
 #General commands.
 def getID(*names):
     iddict = {}
