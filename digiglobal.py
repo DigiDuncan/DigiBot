@@ -19,7 +19,7 @@ from math import *
 import digiformatter as df
 
 #Version.
-version = "0.2.0a"
+version = "0.2.1a"
 
 #Constants
 newline = "\n"
@@ -27,7 +27,7 @@ folder = ".."
 
 def getID(*names):
     iddict = {}
-    with io.open("ids.txt", "r", encoding="utf-8") as idfile:
+    with io.open("text/ids.txt", "r", encoding="utf-8") as idfile:
         ids = idfile.readlines()
     ids = [x.strip() for x in ids]
     for line in ids:

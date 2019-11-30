@@ -9,9 +9,9 @@ class QuoteCog(commands.Cog):
         #"Add" subcommand.
         if commandstring.startswith("add "):
             quotetoadd = commandstring[4:].replace("\n", ";")
-            with io.open("quotes.txt", "a", encoding="utf-8") as quotefile:
+            with io.open("text/quotes.txt", "a", encoding="utf-8") as quotefile:
                 quotefile.write(quotetoadd + newline)
-            with io.open("quotes.txt", "r", encoding="utf-8") as quotefile:
+            with io.open("text/quotes.txt", "r", encoding="utf-8") as quotefile:
                 quoteslist = quotefile.readlines()
             quoteslist = [x.strip() for x in quoteslist]
             await ctx.send(f"""***Quote added***:
@@ -19,7 +19,7 @@ class QuoteCog(commands.Cog):
             await bot.get_channel('560143208311422976').send(f"***Quote {len(quoteslist)}:*** {quotetoadd}".replace(";", "\n"))
             df.msg(f"{ctx.message.author.name} added quote {len(quoteslist)}:\n{quotetoadd}")
         if commandstring.startswith("random") or commandstring == "":
-            with io.open("quotes.txt", encoding="utf-8") as quotefile:
+            with io.open("text/quotes.txt", encoding="utf-8") as quotefile:
                 quoteslist = quotefile.readlines()
             quoteslist = [x.strip() for x in quoteslist]
             quoteid = random.randrange(len(quoteslist))
@@ -30,7 +30,7 @@ class QuoteCog(commands.Cog):
             df.msg(f"{ctx.message.author.name} printed a random quote {quoteid}.")
         #Print a quote.
         else:
-            with io.open("quotes.txt", encoding="utf-8") as quotefile:
+            with io.open("text/quotes.txt", encoding="utf-8") as quotefile:
                 quoteslist = quotefile.readlines()
             quoteslist = [x.strip() for x in quoteslist]
             quoteid = int(commandstring)
@@ -51,7 +51,7 @@ class QuoteCog(commands.Cog):
     @commands.command()
     async def allquotes(self, ctx):
         if ctx.message.author.id in getID("DigiDuncan", "AWK", "DigiBot"):
-            with io.open("quotes.txt", "r", encoding="utf-8") as quotefile:
+            with io.open("text/quotes.txt", "r", encoding="utf-8") as quotefile:
                 quoteslist = quotefile.readlines()
             quoteslist = [x.strip() for x in quoteslist]
             quotenum = 0
