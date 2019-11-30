@@ -1,2 +1,3 @@
 _authtoken.txt
 *.pyc
+temp/*
