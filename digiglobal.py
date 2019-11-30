@@ -10,11 +10,14 @@ import random
 import asyncio
 import codecs
 import io
+import requests
+import html
 
 from decimal import *
 from colored import fore, back, style, fg, bg, attr
 from pathlib import Path
 from math import *
+from bs4 import BeautifulSoup
 
 import digiformatter as df
 
