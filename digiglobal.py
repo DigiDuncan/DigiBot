@@ -13,6 +13,7 @@ import io
 import requests
 import html
 import shutil
+import difflib
 
 from decimal import *
 from colored import fore, back, style, fg, bg, attr
@@ -23,7 +24,7 @@ from bs4 import BeautifulSoup
 import digiformatter as df
 
 #Version.
-version = "0.3.1a"
+version = "0.3.2a"
 
 #Constants.
 newline = "\n"
@@ -43,7 +44,7 @@ def getID(*names):
         ids = idfile.readlines()
     ids = [x.strip() for x in ids]
     for line in ids:
-        iddict[line[19:]] = line[:18]
+        iddict[line[19:]] = line[:18].lower()
     if len(names) == 0:
         return iddict
     if len(names) == 1:
@@ -243,14 +244,14 @@ def getWiiAttribute(soup, attr):
     #The attributes value is in the next sibling,
     returnattr = lookup.next_sibling
     #If the the value doesn't exist, return a blank.
-    if returnattr == None: return ""
+    if returnattr == None: return "Unknown"
 
     #Get rid of newlines in the raw HTML for this chunk (which should include the value we want.)
     attrstring = str(returnattr).replace(newline, "")
     #Parse HTML with regex ;)
     if re.search(">(.*?)<", attrstring) != None: return re.search(">(.*?)<", attrstring).group(1)
     #If we STILL can't find it, return a blank.
-    return ""
+    return "Unknown"
 
 def getWiiAttributes(GAMEID):
     #Get the soup for the page of the game we want.
@@ -258,15 +259,20 @@ def getWiiAttributes(GAMEID):
     soup = BeautifulSoup(response.content, "html.parser")
 
     #Build a dictionary of arrtibutes.
+
     attrdict = {}
+    for key in ("ID", "name", "region", "type", "langauges", "synopsis", "developer", "publisher",
+        "date", "genre", "rating", "cover", "icon", "color"):
+        attrdict[key] = "Unknown"
+
     attrdict['ID'] = GAMEID
     attrdict['name'] = getWiiAttribute(soup, "title (EN)")
-    if attrdict['name'] == "": attrdict['name'] = getWiiAttribute(soup, "title (JP)") #Fallback to the JP title.
+    if attrdict['name'] == "Unknown": attrdict['name'] = getWiiAttribute(soup, "title (JP)") #Fallback to the JP title.
     attrdict['region'] = getWiiAttribute(soup, "region")
     attrdict['type'] = getWiiAttribute(soup, "type")
     attrdict['languages'] = getWiiAttribute(soup, "languages")
     attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (EN)")
-    if attrdict['synopsis'] == "": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)") #Fallback to the JP synposis.
+    if attrdict['synopsis'] == "Unknown": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)") #Fallback to the JP synposis.
     attrdict['developer'] = getWiiAttribute(soup, "developer")
     attrdict['publisher'] = getWiiAttribute(soup, "publisher")
     attrdict['date'] = getWiiAttribute(soup, "release date")
@@ -292,7 +298,29 @@ def getWiiAttributes(GAMEID):
         attrdict['icon'] = qmark
         atrrdict['color'] = discord.Color.from_rgb(200, 0, 0)
 
+    for k in attrdict:
+        if attrdict[k] == "": attrdict[k] = "Unknown"
+
     return attrdict
+
+def getPriorityGame(gameidmatches):
+    matchregions = {}
+    for game in gameidmatches:
+        matchattrs = getWiiAttributes(game)
+        if matchattrs['region'] == "PAL":
+            if "EN" in matchattrs['languages']: matchregions[game] = "PAL-EN"
+            else: matchregions[game] = "PAL"
+        elif matchattrs['region'] == "NTSC-U":
+            matchregions[game] = "US"
+        elif matchattrs['region'] == "NTSC-J":
+            matchregions[game] = "JP"
+        else:
+            matchregions[game] = "OTHER"
+    for region in ('US', 'PAL-EN', 'NTSC-J', 'PAL', 'OTHER'):
+        for k, v in matchregions.items():
+            if v == region:
+                return k
+    return None #Should never happen.
 
 #Make a dictionary of all game IDs and their corrosponding titles.
 wiidictionary = {}
