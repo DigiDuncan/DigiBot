@@ -26,7 +26,7 @@ class EggCog(commands.Cog):
             if random.randrange(6) == 1:
                 df.warn("Monika triggered.")
                 line = random.choice(monikalines)
-                await message.channel.send(line, delete_after=7)
+                await message.channel.send(f"{line} {monikanervous}", delete_after=7)
         if re.match(r"[Ww][Hh][Aa][Tt].*[Ss] [Uu][Pp].*", message.content):
             df.warn("{0} has never seen Up!".format(message.author.name))
             await message.channel.send("""Up is a 2009 American 3D computer-animated comedy-drama buddy adventure film produced by Pixar Animation Studios and released by Walt Disney Pictures.

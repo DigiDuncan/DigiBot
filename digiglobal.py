@@ -32,6 +32,9 @@ hdr = {'User-Agent': 'Mozilla/5.0'}
 
 #Emojis.
 loadingemoji = "<a:loading:650449888684933166>"
+monikanervous = "<:monikanervous:650449888445857819>"
+monikaemoji = "<:monika:405855239862747157>"
+typingemoji = "<a:typing:650449888592789525>"
 
 #General commands.
 def getID(*names):
