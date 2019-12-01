@@ -238,19 +238,19 @@ def getWiiAttribute(soup, attr):
     lookup = soup.find("table", class_="GameData").find("td", string=attr)
     #Attributes sometimes have newlines because this HTML is dumb.
     if lookup == None: lookup = soup.find("table", class_="GameData").find("td", string=attr + newline)
-    #If we still can't find it, the attribute doesn't exist. Return a blank.
+    #If we still can't find it, the attribute doesn't exist. Return a Unknown.
     if lookup == None:
-        return ""
+        return "Unknown"
     #The attributes value is in the next sibling,
     returnattr = lookup.next_sibling
-    #If the the value doesn't exist, return a blank.
+    #If the the value doesn't exist, return a Unknown.
     if returnattr == None: return "Unknown"
 
     #Get rid of newlines in the raw HTML for this chunk (which should include the value we want.)
     attrstring = str(returnattr).replace(newline, "")
     #Parse HTML with regex ;)
     if re.search(">(.*?)<", attrstring) != None: return re.search(">(.*?)<", attrstring).group(1)
-    #If we STILL can't find it, return a blank.
+    #If we STILL can't find it, return a Unknown.
     return "Unknown"
 
 def getWiiAttributes(GAMEID):
@@ -267,12 +267,12 @@ def getWiiAttributes(GAMEID):
 
     attrdict['ID'] = GAMEID
     attrdict['name'] = getWiiAttribute(soup, "title (EN)")
-    if attrdict['name'] == "Unknown": attrdict['name'] = getWiiAttribute(soup, "title (JP)") #Fallback to the JP title.
+    if attrdict['name'] == "Unknown": attrdict['name'] = getWiiAttribute(soup, "title (JA)") #Fallback to the JP title.
     attrdict['region'] = getWiiAttribute(soup, "region")
     attrdict['type'] = getWiiAttribute(soup, "type")
     attrdict['languages'] = getWiiAttribute(soup, "languages")
     attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (EN)")
-    if attrdict['synopsis'] == "Unknown": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JP)") #Fallback to the JP synposis.
+    if attrdict['synopsis'] == "Unknown": attrdict['synopsis'] = getWiiAttribute(soup, "synopsis (JA)") #Fallback to the JP synposis.
     attrdict['developer'] = getWiiAttribute(soup, "developer")
     attrdict['publisher'] = getWiiAttribute(soup, "publisher")
     attrdict['date'] = getWiiAttribute(soup, "release date")
@@ -296,7 +296,7 @@ def getWiiAttributes(GAMEID):
         attrdict['color'] = discord.Color.from_rgb(27, 183, 235)
     else:
         attrdict['icon'] = qmark
-        atrrdict['color'] = discord.Color.from_rgb(200, 0, 0)
+        attrdict['color'] = discord.Color.from_rgb(200, 0, 0)
 
     for k in attrdict:
         if attrdict[k] == "": attrdict[k] = "Unknown"
