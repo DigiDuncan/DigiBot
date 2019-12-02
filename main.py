@@ -14,7 +14,7 @@ description = '''A Discord bot with many unrelated functions. A personal coding 
 initial_extensions = ['cogs.main',
                     'cogs.quote',
                     'cogs.wii',
-#                    'cogs.ai',
+                    'cogs.ai',
                     'cogs.eastereggs']
 
 bot = commands.Bot(command_prefix=prefix, description=description)

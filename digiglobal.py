@@ -20,6 +20,7 @@ from colored import fore, back, style, fg, bg, attr
 from pathlib import Path
 from math import *
 from bs4 import BeautifulSoup
+from textgenrnn import textgenrnn
 
 import digiformatter as df
 

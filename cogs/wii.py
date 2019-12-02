@@ -5,7 +5,7 @@ class WiiCog(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def wiisearch(self, ctx, searchterm, flags = None):
+    async def wiisearch(self, ctx, *, searchterm : str):
         df.msg(f"{ctx.message.author.name} requested a WiiSearch on the term \"{searchterm}\".")
         initialmessage = await ctx.send(f"{loadingemoji} Processing {ctx.message.author.name}'s Wii search...")
 

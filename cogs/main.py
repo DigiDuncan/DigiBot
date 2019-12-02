@@ -93,6 +93,7 @@ class MainCog(commands.Cog):
                 currentmessage += emoji
             for message in messagelist:
                 await ctx.send(message)
+                await asyncio.sleep(1)
             #df.msg("User {0} requested an emojified string too long for Discord.".format(ctx.message.author.id))
             #await ctx.send("<@{0}>, Emojified string too long for Discord.".format(ctx.message.author.id), delete_after=5)
         else:
