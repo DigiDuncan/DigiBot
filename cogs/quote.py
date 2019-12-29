@@ -1,4 +1,11 @@
-from digiglobal import *
+from digiglobal import getID, newline
+import digiformatter as df
+from discord.ext import commands
+import io
+import random
+
+quoteschannel = 560143208311422976
+
 
 class QuoteCog(commands.Cog):
     def __init__(self, bot):
@@ -6,7 +13,7 @@ class QuoteCog(commands.Cog):
 
     @commands.command()
     async def quote(self, ctx, *, commandstring : str):
-        #"Add" subcommand.
+        # "Add" subcommand.
         if commandstring.startswith("add "):
             quotetoadd = commandstring[4:].replace("\n", ";")
             with io.open("text/quotes.txt", "a", encoding="utf-8") as quotefile:
@@ -16,7 +23,7 @@ class QuoteCog(commands.Cog):
             quoteslist = [x.strip() for x in quoteslist]
             await ctx.send(f"""***Quote added***:
 {quotetoadd}""")
-            await self.bot.get_channel('560143208311422976').send(f"***Quote {len(quoteslist)}:*** {quotetoadd}".replace(";", "\n"))
+            await self.bot.get_channel(quoteschannel).send(f"***Quote {len(quoteslist)}:*** {quotetoadd}".replace(";", "\n"))
             df.msg(f"{ctx.message.author.name} added quote {len(quoteslist)}:\n{quotetoadd}")
         if commandstring.startswith("random") or commandstring == "":
             with io.open("text/quotes.txt", encoding="utf-8") as quotefile:
@@ -28,7 +35,7 @@ class QuoteCog(commands.Cog):
             await ctx.send(f"""***Random Quote {quoteid}:***
 {printquote}""")
             df.msg(f"{ctx.message.author.name} printed a random quote {quoteid}.")
-        #Print a quote.
+        # Print a quote.
         else:
             with io.open("text/quotes.txt", encoding="utf-8") as quotefile:
                 quoteslist = quotefile.readlines()
@@ -44,9 +51,14 @@ class QuoteCog(commands.Cog):
                 return
             printquote = quoteslist[quoteid - 1]
             printquote = printquote.replace(";", "\n")
-            await ctx.send(f"""***Quote {quoteid}:***
+            if ctx.message.channel.id == quoteschannel:
+                await ctx.send(f"""***Quote {quoteid}:*** {printquote}""")
+                df.msg(f"{ctx.message.author.name} printed quote {quoteid}.")
+                ctx.message.delete()
+            else:
+                await ctx.send(f"""***Quote {quoteid}:***
 {printquote}""")
-            df.msg(f"{ctx.message.author.name} printed quote {quoteid}.")
+                df.msg(f"{ctx.message.author.name} printed quote {quoteid}.")
 
     @commands.command()
     async def allquotes(self, ctx):
@@ -61,6 +73,7 @@ class QuoteCog(commands.Cog):
         else:
             await ctx.send("You are not allowed to use this command.")
             df.warn(f"{ctx.message.author.name} tried to print all quotes, but they are forbidden!")
+
 
 # Necessary.
 def setup(bot):
