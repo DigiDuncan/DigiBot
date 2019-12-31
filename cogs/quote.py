@@ -4,7 +4,7 @@ from discord.ext import commands
 import io
 import random
 
-quoteschannel = 560143208311422976
+quoteschannel = 661418318216822804
 
 
 class QuoteCog(commands.Cog):
